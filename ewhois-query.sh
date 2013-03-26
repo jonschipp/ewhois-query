@@ -106,11 +106,12 @@ if [[ $TYPE == "w" ]]; then
 echo -e "\n=== [Basic] ===\n" 
 grep -o $QUERY ${QUERY}.html | head -1  | sed 's/\('"$QUERY"'\)/Domain Name: \1/'
 grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ${QUERY}.html | sed 's/\(.*\)/IP Address: \1/' | head -1
-grep -o '<span>.*<\/span> ' ${QUERY}.html | sed 's/<span>//;s/<\/span>//;s/^/Reverse IP Lookup: /' | sort | uniq
 grep -o " Located near.*" ${QUERY}.html | sed  -e 's/^ //' -e 's/<\/div>//'
 grep -o 'UA-[0-9]\{6\}' ${QUERY}.html | sed 's/^/Google Analytics ID: /'
 grep -o "<strong>.*other sites sharing this ID" ${QUERY}.html | sed 's/<strong>//;s/<\/strong>//;s/^/ --> /'
 grep -o '[1-2][0-9]\{3\}-[0-1][1-9]-[0-3][1-9]' ${QUERY}.html | sed 's/^/Last Updated: /' | head -1
+echo -e "\n=== [Reverse IP Lookup] ===\n" 
+grep -A 1 "Reverse IP Lookup" ${QUERY}.html | awk 'BEGIN { RS = "<span>" } { print $1 }' | sed '/^</d;s/<\/span>//'
 awk -F "</*td>|</*tr>" 'BEGIN { RS = "</tr>"; print "\n=== [DNS] ===\n\nHost:\t\tType:\tTTL:\tData:" } ! /div/ && /'"$QUERY"'/ {print $3"\t", $5"\t", $7"\t", $9"\t" }' ${QUERY}.html
 awk 'BEGIN { print "\n=== [Whois] ===\n" } /<pre>/,/<\/pre>/ { print }' ${QUERY}.html | sed -e '/<img/d' -e '/pre>/d'
 fi
@@ -136,6 +137,10 @@ fi
 
 # Cleanup
 if [[ $DELETE == "1" ]]; then
-echo -e "Removing: \n$(ls ${QUERY}.html*)"
+for file in $(ls ${QUERY}.html*)
+do
+echo -e "\nRemoving:"
+echo " --> $file"
 rm ${QUERY}.html*
+done
 fi
