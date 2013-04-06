@@ -13,7 +13,7 @@ Each use retrieves the queried page and stores in the
 current working directory (CWD). ewhois-query works on
 that file offline e.g. google.com.html. The extension 
 should not be specified when using the -N option i.e.
- googl.com not google.com.html. 
+google.com not google.com.html. 
 
 TODO (not ranked) [~~DONE~~]: 
 
