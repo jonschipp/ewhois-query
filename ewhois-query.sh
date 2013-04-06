@@ -22,8 +22,8 @@ Query the ewhois.com engine.
 	
 	-D	   Delete files (cleanup)
 	-N         Skip download, file exists
-	-O  <dir>  Output to directory
-	-R  <file> Read ewhois file
+	-R  <file> Read html file from full path
+	-O  <file> Write output to file
 	
 Usage: $0 <option> <query>
 e.g. $0 -w google.com
@@ -56,12 +56,13 @@ fi
 }
 
 # option and argument handling
-while getopts "ha:Dg:Nr:w:" OPTION
+while getopts "ha:Dg:NO:r:R:w:" OPTION
 do
      case $OPTION in
          a)
              QUERY="$OPTARG"
              TYPE="$OPTION"
+	     URL="http://www.ewhois.com/adsense-id"
              ;;
          D)
              DELETE="1"
@@ -69,6 +70,7 @@ do
          g)
              QUERY="$OPTARG"
              TYPE="$OPTION"
+	     URL="http://www.ewhois.com/analytics-id"
              ;;
          h)
              usage
@@ -77,29 +79,43 @@ do
          N)
              SKIP=1
 	     ;;
+	 O)
+	     LOGFILE="$OPTARG"
+	     exec > >(tee "$LOGFILE") 2>&1
+	     ;;
          r) 
              QUERY="$OPTARG"
              TYPE="$OPTION"
 	     URL="http://www.ewhois.com/ip-address"
              ;; 
+	 R) 
+	     SKIP=1
+	     FPATH="$OPTARG"
+	     ;;
 	 w) 
              QUERY="$OPTARG"
              TYPE="$OPTION"
              URL="http://www.ewhois.com"
 	     ;;
          \?)
-             exit 1
+             usage
              ;;
      esac
 done
 
-# call functions
+# test & call functions
+if ! [[ $1 == -* ]]; then
+usage
+fi 
 browsercheck 
-#inputcheck
 
 if [ "$SKIP" != "1" ];then 
 download 
 fi
+
+#if  [ ! -z "$FPATH" ]; then
+#QUERY="$FPATH"
+#fi
 
 # meat
 if [[ $TYPE == "w" ]]; then
@@ -132,7 +148,23 @@ sed 's/<\/span>/<\/span>\n/g' ${QUERY}.html | grep -o '<span>.*<\/span>' | sed '
         	wget -O ${QUERY}.html${i} ${URL}/${QUERY}/${page}/
         	sed 's/<\/span>/<\/span>\n/g' ${QUERY}.html${i} | grep -o '<span>.*<\/span>' | sed '/Login/d;/Register/d;/Reverse IP Lookup/d;/<a href/d;s/<span>//;s/<\/span>//;s/^/Hosted: /'
 	done
+echo
+fi
 
+if [[ $TYPE == "g" ]]; then
+echo -e "\n=== [Reverse Google Analytics ID Lookup] ===\n" 
+grep -o "<strong>.* Analytics ID" ${QUERY}.html | sed 's/<strong>//;s/<\/strong>//;s/^/ --> /;s/$/ '"$QUERY"'\n/'
+sed 's/<\/span>/<\/span>\n/g' ${QUERY}.html | grep -o '<span>.*<\/span>' | \
+sed '/Login/d;/Register/d;/Reverse/d;s/<span>//;s/<\/span>//'
+echo
+fi
+
+if [[ $TYPE == "a" ]]; then
+echo -e "\n=== [Reverse Google Adsense ID Lookup] ===\n" 
+grep -o "<strong>.* AdSense ID" ${QUERY}.html | sed 's/<strong>//;s/<\/strong>//;s/^/ --> /;s/$/ '"$QUERY"'\n/'
+sed 's/<\/span>/<\/span>\n/g' ${QUERY}.html | grep -o '<span>.*<\/span>' | \
+sed '/Login/d;/Register/d;/Reverse/d;s/<span>//;s/<\/span>//'
+echo
 fi
 
 # Cleanup
