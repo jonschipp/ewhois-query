@@ -23,6 +23,9 @@ TODO (not ranked) [~~DONE~~]:
 4. Input validation
 5. Fix -R option which reads html file from full path
 6. MAC Vender/OUI Lookup 
+7. Parse Reverse Analytics field to -w lookup
+8. Fix UA bug where characters are cut short 
+e.g. UA-573017 should be UA-5730170
 
 USAGE:
 
