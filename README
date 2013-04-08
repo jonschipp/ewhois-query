@@ -22,6 +22,7 @@ TODO (not ranked) [~~DONE~~]:
 3. Add option to show recent lookups
 4. Input validation
 5. Fix -R option which reads html file from full path
+6. MAC Vender/OUI Lookup 
 
 USAGE:
 
