@@ -27,19 +27,19 @@ not be specified when using the `-N` option *i.e.*  google.com not google.com.ht
 
 ## Usage:
 
-Mandatory Options:
+#### Mandatory Options:
 
 `-w`  <dns>  Whois <br>
 `-r`  <ip>   Reverse IP <br>
 `-a`  <id>   Adsense ID <br>
 `-g`  <id>   Analytics ID <br>
 
-Non-mandatory options:
+#### Non-mandatory options:
 
-`-D` Delete file after run otherwise it's stored in CWD *e.g.* `-D -w google.com`
-`-N` Skip download i.e. use existing file in CWD *e.g.* `-N -w google.com`
-#`-R` Read file from existing file but specify full path (broken)
-`-O` Write to file (includes stderr  + stdout) *e.g.* `-O output.txt`
+`-D` Delete file after run otherwise it's stored in CWD *e.g.* `-D -w google.com` <br>
+`-N` Skip download i.e. use existing file in CWD *e.g.* `-N -w google.com` <br>
+~~`-R` Read file from existing file but specify full path (broken)~~ <br>
+`-O` Write to file (includes stderr  + stdout) *e.g.* `-O output.txt` <br>
 
 ```shell
 Usage: ./ewhois-query <option> <query> [-DN] [-O out.txt]
