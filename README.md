@@ -1,5 +1,7 @@
 # ewhois-query
 
+*Note:* Code longer works, ewhois website is different
+
 `ewhois-query` - Query the ewhois.com engine from the command-line
 
    * Whois Lookup
